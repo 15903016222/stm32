@@ -23,6 +23,21 @@ void GPIO_Configuration(void)
   
   
   GPIO_InitTypeDef GPIO_InitStructure;
+	
+	// CLK:PB5 CLA:PC11 DATA:PC11
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;        // PB5端口
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; // 腿玩输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;// 输出频率50MHz
+	GPIO_Init(GPIOB, &GPIO_InitStructure);           // 初始化PB5
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;        // PC10 PC11端口
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; // 腿玩输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;// 输出频率50MHz
+	GPIO_Init(GPIOC, &GPIO_InitStructure);           // 初始化PC
+	
+	// 开启时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOE, ENABLE); // 开启B端口 和 E端口的时钟
+	
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB| RCC_APB2Periph_GPIOC| RCC_APB2Periph_GPIOD, ENABLE);
 
@@ -412,7 +427,7 @@ void delay_ms(unsigned int nTime)
 { 
   TimingDelay = nTime;
 
-  while(TimingDelay != 0);
+  while((TimingDelay--) != 0);
 }
 
 /**

@@ -60,7 +60,7 @@ void Time_Delay (void)
 	unsigned int i;
 		unsigned int j;
 	
-	for(i=0;i<0xfff;i++)
+	for(i=0;i<0xf;i++)
 	{
 		
 		for(j=0;j<0xFFFF;j++);
@@ -131,6 +131,7 @@ void USART1_IRQHandler(void)
   */
 int main(void)
 {
+/*
 	u8 i,data;
 	
 	RCC_Configuration();
@@ -153,6 +154,7 @@ int main(void)
 	printf("\n\ti value is   %d,  %d",i+i,i*i);
 	printf("\n\t-----------------------------");
 	
+	// 打印USART1的接收的数据打印到串口，每次只能接收到10个字节就会打印一次
 	while (1){
 		if (1 == flag) {
 			printf ("%s", ch);
@@ -160,6 +162,38 @@ int main(void)
 			count = 0;
 		}
 	}
+*/
+
+	/* **** GPIO库的使用 **** */
+	u8 i, data;
+	RCC_Configuration();
+	GPIO_Configuration();
+	
+	// CLK:PB5上升沿 CLA:PC11 == 1 DATA:PC10 输出数据
+	// 模拟164芯片
+	data = 0x30;
+	GPIO_SetBits(GPIOC, GPIO_Pin_11);
+	for (i = 0; i < 8; ++i) {
+		GPIO_ResetBits(GPIOB, GPIO_Pin_5); // PB5 = 0;
+		
+		if ((data&0x80) == 0x00)
+			GPIO_ResetBits(GPIOC, GPIO_Pin_10);
+		else
+			GPIO_SetBits(GPIOC, GPIO_Pin_10);
+		
+		GPIO_SetBits(GPIOB, GPIO_Pin_5);      // PB5 = 1;
+		data <<= 1;
+	}
+	
+	while (1) {
+		Time_Delay();
+		GPIO_SetBits(GPIOC, GPIO_Pin_13);
+		Time_Delay();
+		GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+	}
+	
+	
+	// 初始化
 	
   /* Setup STM32 system (clock, PLL and Flash configuration) */
 //  SystemInit();
