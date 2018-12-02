@@ -124,6 +124,31 @@ void USART1_IRQHandler(void)
      
 }
 
+typedef enum {
+  STM32F0,
+  STM32F1,
+  STM32F2,
+  STM32F3,
+  STM32F4,
+  STM32F7,
+  STM32L0,
+  STM32L1,
+  STM32L4,
+  STM32H7,
+}MCUTypedef;
+
+u32 idAddr[]={
+	0x1FFFF7AC,	/*STM32F0唯一ID起始地址*/
+	0x1FFFF7E8,	/*STM32F1唯一ID起始地址*/
+	0x1FFF7A10,	/*STM32F2唯一ID起始地址*/
+	0x1FFFF7AC,	/*STM32F3唯一ID起始地址*/
+	0x1FFF7A10,	/*STM32F4唯一ID起始地址*/
+	0x1FF0F420,	/*STM32F7唯一ID起始地址*/
+	0x1FF80050,	/*STM32L0唯一ID起始地址*/
+	0x1FF80050,	/*STM32L1唯一ID起始地址*/
+	0x1FFF7590,	/*STM32L4唯一ID起始地址*/
+	0x1FF0F420  /*STM32H7唯一ID起始地址*/
+}; 
 /**
   * @brief  Main program.
   * @param  None
@@ -131,8 +156,8 @@ void USART1_IRQHandler(void)
   */
 int main(void)
 {
-/*
 	u8 i,data;
+	u8 *ID = NULL;
 	
 	RCC_Configuration();
 	NVIC_Configuration();
@@ -154,6 +179,13 @@ int main(void)
 	printf("\n\ti value is   %d,  %d",i+i,i*i);
 	printf("\n\t-----------------------------");
 	
+	// 获取STM32F1XX的ID号
+	printf ("\r\n STM32 ID is : \r\n");
+	ID = (u8 *)idAddr[STM32F1];
+	for (i = 0; i < 12; ++i) {
+		printf ("%.2x ", ID[i]);
+	}
+	
 	// 打印USART1的接收的数据打印到串口，每次只能接收到10个字节就会打印一次
 	while (1){
 		if (1 == flag) {
@@ -162,10 +194,10 @@ int main(void)
 			count = 0;
 		}
 	}
-*/
+
 
 	/* **** GPIO库的使用 **** */
-	u8 i, data;
+/*	u8 i, data;
 	RCC_Configuration();
 	GPIO_Configuration();
 	
@@ -191,7 +223,7 @@ int main(void)
 		Time_Delay();
 		GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 	}
-	
+	*/
 	
 	// 初始化
 	
