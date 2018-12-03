@@ -158,32 +158,39 @@ extern unsigned char LED1_State;
 
 
 unsigned int Time_delay=0;
-
+unsigned int count_num = 1000;
+unsigned int count_flag = 0;
 void SysTick_Handler(void)	 //一毫秒系统中断
 {
   
   
   TimingDelay_Decrement();
-  
-	
+  if (count_num != 0) {
+		;
+	}
+	else {
+		count_flag = 1;
+		count_num = 1000;
+	}
+	--count_num;
 			//获取按键按下的按键值
 		
 
-   	Key0=GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);
-	
-	  if(Key0==0)
-			{
-				if(Key0_Value<100)
-					{
-            Key0_Value++;
-           }
-					 else
-						 {
-							 Key0_State=0xff;//设置按键按下标记
-							 Key0_Value=0;
-               }
-				
-       }
+//   	Key0=GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);
+//	
+//	  if(Key0==0)
+//			{
+//				if(Key0_Value<100)
+//					{
+//            Key0_Value++;
+//           }
+//					 else
+//						 {
+//							 Key0_State=0xff;//设置按键按下标记
+//							 Key0_Value=0;
+//               }
+//				
+//       }
 	
 		
 

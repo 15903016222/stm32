@@ -149,6 +149,26 @@ u32 idAddr[]={
 	0x1FFF7590,	/*STM32L4唯一ID起始地址*/
 	0x1FF0F420  /*STM32H7唯一ID起始地址*/
 }; 
+
+// 库函数的方式操作SysTick的计时
+//void SysTick_Config(void)
+//{
+//	// 失能SysTick计数器
+//	SysTick_CounterCmd(SysTick_Counter_Disable);
+//	// 失能SysTick的中断
+//	SysTick_ITConfig(DISABLE);
+//	// 设置SysTick的时钟源
+//	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
+//	// 设置SysTick重载值
+//	SysTick_SetReload(9000 * 1000); // 9000代表1ms 9000*1000代表1秒 
+//	// 使能SysTick的中断
+//	// SysTick_ITConfig(); //暂时不使用计数完成中断
+//	// 使能SysTick的计数器
+//	SysTick_CounterCmd(SysTick_Counter_Enable);
+//}
+
+extern unsigned int count_flag;
+
 /**
   * @brief  Main program.
   * @param  None
@@ -158,12 +178,16 @@ int main(void)
 {
 	u8 i,data;
 	u8 *ID = NULL;
+	u32 sec, min;
+
 	
 	RCC_Configuration();
 	NVIC_Configuration();
 	GPIO_Configuration();
 	USART_Configuration();
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+	SysTick_init();
+
 	
 	data='A';
 	for(i=0;i<30;i++)
@@ -185,14 +209,32 @@ int main(void)
 	for (i = 0; i < 12; ++i) {
 		printf ("%.2x ", ID[i]);
 	}
+		min = 1;
+		sec = 30;
 	
 	// 打印USART1的接收的数据打印到串口，每次只能接收到10个字节就会打印一次
 	while (1){
-		if (1 == flag) {
-			printf ("%s", ch);
-			flag = 0;
-			count = 0;
+//		delay_ms(300);
+//		GPIO_SetBits(GPIOC, GPIO_Pin_13);
+//		delay_ms(300);
+//		GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+//		if (1 == flag) {
+//			printf ("%s", ch);
+//			flag = 0;
+//			count = 0;
+//		}
+
+		// SysTick的计时
+		if(count_flag)
+		{
+			count_flag = 0;
+			if ((++sec) == 60) {
+				++min;
+				sec = 0;
+			}
+			printf ("%.2d:%.2d 1\r\n", min, sec);
 		}
+
 	}
 
 
@@ -265,7 +307,7 @@ int main(void)
 //    }
 //		
 //		I2CWriteByte(0,TxBuffer,32); //写入长度
-//			
+			
 //		I2CReadByte(0,RxBuffer,32);
 //			
 //		JG=Compare_Mem (TxBuffer,RxBuffer,32);
@@ -290,7 +332,7 @@ int main(void)
 //		if(t>'~')t=' ';
 //		
 //		OLED_ShowNum(103,48,t,3,16);//
-//		
+		
 //    
 //		if(Key0_State==0xff)
 //		{

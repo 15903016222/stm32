@@ -414,7 +414,9 @@ static unsigned int TimingDelay;
 void SysTick_init(void)
 {
 
-	SysTick_Config(SystemFrequency / 1000);
+//	SysTick_Config(SystemFrequency / 1000);
+	SysTick_Config(9000);
+
 
 }								    
 
@@ -427,7 +429,7 @@ void delay_ms(unsigned int nTime)
 { 
   TimingDelay = nTime;
 
-  while((TimingDelay--) != 0);
+  while((TimingDelay) != 0);
 }
 
 /**

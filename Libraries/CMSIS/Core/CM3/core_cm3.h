@@ -1206,6 +1206,7 @@ static __INLINE uint32_t SysTick_Config(uint32_t ticks)
   SysTick->LOAD  =  (ticks & SYSTICK_MAXCOUNT) - 1;                                         /* set reload register */
   NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);                               /* set Priority for Cortex-M0 System Interrupts */
   SysTick->VAL   =  (0x00);                                                                 /* Load the SysTick Counter Value */
+	// SYSTICK_CLKSOURCE = 1外部时钟 SYSTICK_ENABLE = 1使能SYSTICK SYSTICK_TICKINT = 1使能SYSTICK中断
   SysTick->CTRL = (1 << SYSTICK_CLKSOURCE) | (1<<SYSTICK_ENABLE) | (1<<SYSTICK_TICKINT);    /* Enable SysTick IRQ and SysTick Timer */
   return (0);                                                                               /* Function successful */
 }
