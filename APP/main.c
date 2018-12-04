@@ -176,6 +176,7 @@ extern unsigned int count_flag;
   */
 int main(void)
 {
+/*
 	u8 i,data;
 	u8 *ID = NULL;
 	u32 sec, min;
@@ -211,7 +212,7 @@ int main(void)
 	}
 		min = 1;
 		sec = 30;
-	
+	GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 	// 打印USART1的接收的数据打印到串口，每次只能接收到10个字节就会打印一次
 	while (1){
 //		delay_ms(300);
@@ -236,7 +237,7 @@ int main(void)
 		}
 
 	}
-
+*/
 
 	/* **** GPIO库的使用 **** */
 /*	u8 i, data;
@@ -270,87 +271,87 @@ int main(void)
 	// 初始化
 	
   /* Setup STM32 system (clock, PLL and Flash configuration) */
-//  SystemInit();
+  SystemInit();
 
-//  RCC_Configuration();
+  RCC_Configuration();
 
-//  NVIC_Configuration();
+  NVIC_Configuration();
 
-//  GPIO_Configuration();
+  GPIO_Configuration();
 
-//  SysTick_init();		     //延时初始化
+  SysTick_init();		     //延时初始化
 
-//  SPI2_Init(); 			     //初始化SPI硬件口
+  SPI2_Init(); 			     //初始化SPI硬件口
 
-//	P_RXD=RxBuffer;//接收指针指向接收缓冲区
-//	
-//  USART_Configuration();  //USART1配置 
+	P_RXD=RxBuffer;//接收指针指向接收缓冲区
+	
+  USART_Configuration();  //USART1配置 
 
-//  TIM2_Config();			//定时器初始化 
-//	
-//	GPIOA->CRL = 0x00;
-//	GPIOA->CRH = 0xffffffff;
+  TIM2_Config();			//定时器初始化 
+	
+	GPIOA->CRL = 0x00;
+	GPIOA->CRH = 0xffffffff;
 
-// 
-//    OLED_Init();			 //初始化OLED      
-//  	OLED_ShowString(1,0, "0.96' OLED TEST");  
-//  	OLED_ShowString(1,16,"mcudev.taobao  ");  
-//   	OLED_ShowString(1,32,"2014-06-16");  
-//  	OLED_ShowString(1,48,"ASCII: ");  
-//  	OLED_ShowString(63,48,"CODE: "); 
+ 
+    OLED_Init();			 //初始化OLED      
+  	OLED_ShowString(1,0, "0.96' OLED TEST");  
+  	OLED_ShowString(1,16,"mcudev.taobao  ");  
+   	OLED_ShowString(1,32,"2014-06-16");  
+  	OLED_ShowString(1,48,"ASCII: ");  
+  	OLED_ShowString(63,48,"CODE: "); 
 
-//		{
-//			unsigned char i;
-//			
-//			for(i=0;i<32;i++)TxBuffer[i]=i;
-//			
-//    }
-//		
-//		I2CWriteByte(0,TxBuffer,32); //写入长度
+		{
+			unsigned char i;
 			
-//		I2CReadByte(0,RxBuffer,32);
-//			
-//		JG=Compare_Mem (TxBuffer,RxBuffer,32);
-//		
-//		if(JG==0)//对Eeprom进行读写判断;
-//		{
-//			OLED_ShowString(1,32,"Eeprom--OK  ");
-//			}
-//		else
-//			{
-//				OLED_ShowString(1,32,"Eeprom--Error  ");
-//      }
-
-// 
-//  /* Infinite loop */
-//  while (1)
-//  {
-//		
-//		OLED_ShowChar(48,48,t,16,1);// OLED_Refresh_Gram();
-//		
-//		t++;
-//		if(t>'~')t=' ';
-//		
-//		OLED_ShowNum(103,48,t,3,16);//
+			for(i=0;i<32;i++)TxBuffer[i]=i;
+			
+    }
 		
-//    
-//		if(Key0_State==0xff)
-//		{
-//      LED0_State=!LED0_State;
-//			 delay_ms(300);
-//			Key0_State=0;
-//     
-//      }
-//		
-//		if(LED0_State==0)
-//				 {
-//					 LED0_ON();//LED亮
-//					 delay_ms(300);
-//					 LED0_OFF();//LED灭
-//					 delay_ms(200); 
-//			 }
-//		
-//  }
+		I2CWriteByte(0,TxBuffer,32); //写入长度
+			
+		I2CReadByte(0,RxBuffer,32);
+			
+		JG=Compare_Mem (TxBuffer,RxBuffer,32);
+		
+		if(JG==0)//对Eeprom进行读写判断;
+		{
+			OLED_ShowString(1,32,"Eeprom--OK  ");
+			}
+		else
+			{
+				OLED_ShowString(1,32,"Eeprom--Error  ");
+      }
+
+ 
+  /* Infinite loop */
+  while (1)
+  {
+		
+		OLED_ShowChar(48,48,t,16,1);// OLED_Refresh_Gram();
+		
+		t++;
+		if(t>'~')t=' ';
+		
+		OLED_ShowNum(103,48,t,3,16);//
+		
+    
+		if(Key0_State==0xff)
+		{
+      LED0_State=!LED0_State;
+			 delay_ms(300);
+			Key0_State=0;
+     
+      }
+		
+		if(LED0_State==0)
+				 {
+					 LED0_ON();//LED亮
+					 delay_ms(1000);
+					 LED0_OFF();//LED灭
+					 delay_ms(1000); 
+			 }
+		
+  }
 
 }
 
