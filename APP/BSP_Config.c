@@ -415,7 +415,7 @@ void SysTick_init(void)
 {
 
 //	SysTick_Config(SystemFrequency / 1000);
-	SysTick_Config(9000);
+	SysTick_Config(8000);
 
 
 }								    
