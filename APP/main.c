@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "stm32f10x_exti.h"
 
 unsigned char *P_RXD;//接收数据指针
 
@@ -167,7 +168,65 @@ u32 idAddr[]={
 //	SysTick_CounterCmd(SysTick_Counter_Enable);
 //}
 
-extern unsigned int count_flag;
+void KEY_GPIO_init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO,ENABLE);
+    GPIO_Init(GPIOB, &GPIO_InitStructure);         
+}
+
+void EXTI_init(void)
+{
+    EXTI_InitTypeDef EXTI_InitStructure;
+    GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource6); //中断资源         
+    EXTI_InitStructure.EXTI_Line = EXTI_Line6;                // 选择EXTI_Line6线
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;       // 中断事件
+//    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; // 下降沿触发中断
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;   // 上升沿触发中断
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE; 
+    EXTI_Init(&EXTI_InitStructure); 
+}
+
+void NVIC_init(void)
+{
+    NVIC_InitTypeDef NVIC_InitStructure;        
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);           //中断分组
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;        //选择EXTI9_5中断 
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; //抢占优先级为0
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;        //响应优先级为0 
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;           //使能EXTI9_5中断
+    NVIC_Init(&NVIC_InitStructure);
+}
+
+void EXTI9_5_IRQHandler(void)
+{   
+		u8 ReadValue;
+		
+    if(EXTI_GetFlagStatus(EXTI_Line6)!=RESET)
+    {            
+				printf("www.xiaosheng.net 1\r\n");
+				LED0_OFF();			
+        GPIO_SetBits(GPIOB, GPIO_Pin_8);
+        GPIO_SetBits(GPIOB, GPIO_Pin_9);
+				ReadValue = GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_6);
+				if (ReadValue) 
+					LED0_OFF();
+				else
+					LED0_ON();
+    }
+    else
+    {
+				printf("www.xiaosheng.net 2\r\n");
+				LED0_ON();
+        GPIO_ResetBits(GPIOB, GPIO_Pin_8);
+        GPIO_ResetBits(GPIOB, GPIO_Pin_9);        
+    }
+    EXTI_ClearITPendingBit(EXTI_Line6); 
+}
 
 /**
   * @brief  Main program.
@@ -289,9 +348,14 @@ int main(void)
 
   TIM2_Config();			//定时器初始化 
 	
+	KEY_GPIO_init();
+	EXTI_init();
+	NVIC_init();
+	
 	GPIOA->CRL = 0x00;
 	GPIOA->CRH = 0xffffffff;
 
+	printf("\n\twww.yxarm.net");
  
     OLED_Init();			 //初始化OLED      
   	OLED_ShowString(1,0, "0.96' OLED TEST");  
@@ -321,35 +385,38 @@ int main(void)
 			{
 				OLED_ShowString(1,32,"Eeprom--Error  ");
       }
-
+			
+LED0_ON();
  
   /* Infinite loop */
   while (1)
   {
+		;
+//		LED0_ON();
+//		
+//		OLED_ShowChar(48,48,t,16,1);// OLED_Refresh_Gram();
 		
-		OLED_ShowChar(48,48,t,16,1);// OLED_Refresh_Gram();
-		
-		t++;
-		if(t>'~')t=' ';
-		
-		OLED_ShowNum(103,48,t,3,16);//
-		
-    
-		if(Key0_State==0xff)
-		{
-      LED0_State=!LED0_State;
-			 delay_ms(300);
-			Key0_State=0;
-     
-      }
-		
-		if(LED0_State==0)
-				 {
-					 LED0_ON();//LED亮
-					 delay_ms(1000);
-					 LED0_OFF();//LED灭
-					 delay_ms(1000); 
-			 }
+//		t++;
+//		if(t>'~')t=' ';
+//		
+//		OLED_ShowNum(103,48,t,3,16);//
+//		
+//    
+//		if(Key0_State==0xff)
+//		{
+//      LED0_State=!LED0_State;
+//			 delay_ms(300);
+//			Key0_State=0;
+//     
+//      }
+//		
+//		if(LED0_State==0)
+//				 {
+//					 LED0_ON();//LED亮
+//					 delay_ms(1000);
+//					 LED0_OFF();//LED灭
+//					 delay_ms(1000); 
+//			 }
 		
   }
 

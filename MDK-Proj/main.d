@@ -20,3 +20,4 @@
 .\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h
 .\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h

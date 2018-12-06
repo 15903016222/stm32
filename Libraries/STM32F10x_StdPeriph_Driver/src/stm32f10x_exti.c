@@ -41,6 +41,7 @@
 /** @defgroup EXTI_Private_Defines
   * @{
   */
+	
 
 #define EXTI_LineNone    ((uint32_t)0x00000)  /* No interrupt selected */
 

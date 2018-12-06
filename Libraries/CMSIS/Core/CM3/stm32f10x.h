@@ -50,7 +50,6 @@
 
 #include "Eeprom.h"
 
-  
 /* Uncomment the line below according to the target STM32 device used in your
    application 
   */
